@@ -2,11 +2,11 @@
 This is a tool to edit your training examples for [rasa NLU](https://github.com/rasahq/rasa_nlu)
 
 
-Use the [online version](https://rasahq.github.io/rasa-nlu-trainer/) or [install with npm](#installation)
+(Use the [online version](https://rasahq.github.io/rasa-nlu-trainer/) or) [install with npm](#installation)
 
 ## installation
 
-`$ npm i -g rasa-nlu-trainer` (you'll need [nodejs and npm](https://nodejs.org/) for this)
+`$ npm i -g m0rth1um/rasa-nlu-trainer` (you'll need [nodejs and npm](https://nodejs.org/) for this)
 
 ## launch
 `$ rasa-nlu-trainer` in your working directory
@@ -16,6 +16,7 @@ this will open the editor in your browser
 #### options
 - `--source -s` path to the training file (by default it will be searched recursively in the current directory)
 - `--port -p` the web app will run here (randomly selected by default)
+- `--token -t` token for the webhooks (see code)
 
 ## development
 
