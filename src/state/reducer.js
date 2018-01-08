@@ -10,6 +10,8 @@ import {
   SET_SELECTION,
   FETCH_DATA,
   SAVING_DONE,
+  EXTRACT_DONE,
+  TRAIN_DONE,
   EXPAND,
   COLLAPSE,
   OPEN_ADD_MODAL,
@@ -42,6 +44,8 @@ const INITIAL_STATE = {
     ? testData.rasa_nlu_data.common_examples.map(e => createExample(e))
     : null,
   isUnsaved: false,
+  isExtracted: false,
+  isUntrained: true,
   selection: null,
   idExampleInModal: null,
 }
@@ -62,6 +66,8 @@ export default function reducer (
         ...state,
         examples: [],
         isUnsaved: false,
+        isExtracted: false,
+        isUntrained: true,
         selection: null,
         idExampleInModal: null,
       }
@@ -104,6 +110,18 @@ export default function reducer (
       return {
         ...state,
         isUnsaved: false,
+      }
+    }
+    case EXTRACT_DONE: {
+      return {
+        ...state,
+        isExtracted: true,
+      }
+    }
+    case TRAIN_DONE: {
+      return {
+        ...state,
+        isUntrained: false,
       }
     }
     case EXPAND: {

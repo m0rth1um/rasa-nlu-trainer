@@ -67,6 +67,46 @@ export const save = (source: string): Function =>  async (
   }
 }
 
+export const EXTRACT_DONE = 'EXTRACT_DONE'
+export const extract = (source: string): Function =>  async (
+  dispatch: Function
+): Promise<void> => {
+  const response = await fetch(`${ROOT_PATH}extract`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: source,
+  })
+  const json = await response.json()
+  if (json.ok) {
+    dispatch({
+      type: EXTRACT_DONE,
+    })
+  }
+}
+
+export const TRAIN_DONE = 'TRAIN_DONE'
+export const train = (source: string): Function =>  async (
+  dispatch: Function
+): Promise<void> => {
+  const response = await fetch(`${ROOT_PATH}train`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: source,
+  })
+  const json = await response.json()
+  if (json.ok) {
+    dispatch({
+      type: TRAIN_DONE,
+    })
+  }
+}
+
 export const EXPAND = 'EXPAND'
 export const expand = (id: string): Object => ({
   type: EXPAND,

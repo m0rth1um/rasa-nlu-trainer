@@ -9,6 +9,7 @@ app.use(bodyParser.json({ limit: '50mb' }))
 const findit = require('findit')
 const getPort = require('get-port')
 const open = require('open')
+const http = require("http")
 
 const updateNotifier = require('update-notifier')
 const pkg = require('./package.json')
@@ -33,6 +34,11 @@ const argv = require('yargs')
       description: '<port> Port to listen on',
       requiresArg: true,
     },
+    token: {
+      alias: 't',
+      description: '<token> Token to use for webhooks',
+      requiresArg: true
+    },
     development: {
       alias: 'd',
     }
@@ -41,6 +47,7 @@ const argv = require('yargs')
     source: null,
     port: null,
     development: false,
+    token: null
   })
   .argv
 
@@ -71,6 +78,37 @@ function readData(path) {
       }
 
       resolve(json)
+    })
+  })
+}
+
+function triggerWebhook(path) {
+  return new Promise((resolve, reject) => {
+    let postData = ''
+    let token = argv.token
+    let postOptions = {
+      host: 'localhost',
+      port: 5002,
+      path: path + '?verify_token=' + token,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    }
+
+    let postReq = http.request(postOptions, function(res) {
+      res.setEncoding('utf8')
+      res.on('data', function(chunk) {
+        resolve(chunk)
+      })
+    })
+
+    postReq.write(postData)
+    postReq.end()
+    postReq.on('error', function(e) {
+      console.log('Error: ' + e)
+      reject(e)
     })
   })
 }
@@ -176,6 +214,29 @@ function serve() {
         .then(json => sourceFile.data = json)
         .catch(error => console.error(error))
         .then(() => res.json({ok: true}))
+    })
+  })
+
+  app.post('/extract', function(req, res) {
+    triggerWebhook('/extract_webhook').then(resp => {
+      if (resp.job) {
+        readData(sourceFile.path).
+          then(json => sourceFile.data = json).
+          catch(error => console.error(error)).
+          then(() => res.json({ok: true}))
+      } else {
+        return res.json({resp})
+      }
+    })
+  })
+
+  app.post('/train', function(req, res) {
+    triggerWebhook('/train_webhook').then(resp => {
+      if (resp.job) {
+        res.json({ok: true})
+      } else {
+        return res.json({resp})
+      }
     })
   })
 

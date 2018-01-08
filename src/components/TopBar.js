@@ -13,12 +13,20 @@ import generateExport from '../utils/generateExport'
 const mapState = (state) => ({
   filename: state.filename || 'loading...',
   isUnsaved: state.isUnsaved,
+  isExtracted: state.isExtracted,
+  isUntrained: state.isUntrained,
   examples: state.examples,
 })
 
 const mapActions = dispatch => ({
   save: (examples) => {
     dispatch(actions.save(examples))
+  },
+  extract: () => {
+    dispatch(actions.extract())
+  },
+  train: () => {
+    dispatch(actions.train())
   },
   openAddModal: () => {
     dispatch(actions.openAddModal())
@@ -51,7 +59,7 @@ class TopBar extends Component {
     this.props.fetchData(file.name, data)
   }
   render() {
-    const { filename, isUnsaved, save, openAddModal } = this.props
+    const { filename, isUnsaved, isExtracted, isUntrained, save, train, extract, openAddModal } = this.props
 
     const fileButtons = isOnline
       ? (
@@ -90,6 +98,26 @@ class TopBar extends Component {
         </Button>
       )
 
+    const extractButton = (
+      <Button
+        style={ styles.button }
+        type={isExtracted ? 'default' : 'primary'}
+        onClick={() => extract()}
+      >
+        Extract
+      </Button>
+    )
+
+    const trainButton = (
+      <Button
+        style={ styles.button }
+        type={isUntrained ? 'primary' : 'default'}
+        onClick={() => train()}
+      >
+        Train
+      </Button>
+    )
+
     return (
       <div style={{ height: 32, display: 'flex' }}>
         <h3 style={{ marginLeft: 8, marginTop: 5 }}>
@@ -104,6 +132,8 @@ class TopBar extends Component {
           Add new example
         </Button>
         {fileButtons}
+        {extractButton}
+        {trainButton}
         <ClearButton style={ styles.button }/>
       </div>
     )
