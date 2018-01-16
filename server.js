@@ -219,11 +219,16 @@ function serve() {
 
   app.post('/extract', function(req, res) {
     triggerWebhook('/extract_webhook').then(resp => {
-      if (resp.job) {
+      resp = JSON.parse(resp)
+      if (resp.job == true) {
         readData(sourceFile.path).
-          then(json => sourceFile.data = json).
-          catch(error => console.error(error)).
-          then(() => res.json({ok: true}))
+          then(json => {
+            sourceFile.data = json
+          }).catch(error => {
+            console.error(error)
+          }).then(() => {
+            res.json({ok: true})
+        })
       } else {
         return res.json({resp})
       }

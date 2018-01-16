@@ -80,7 +80,7 @@ class TopBar extends Component {
                 [ generateExport() ],
                 { type: 'text/plain;charset=utf-8' },
               )
-              debugger
+
               saveAs(blob, filename)
             }}
           >
