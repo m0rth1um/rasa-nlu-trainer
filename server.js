@@ -10,6 +10,7 @@ const findit = require('findit')
 const getPort = require('get-port')
 const open = require('open')
 const http = require("http")
+const stringify = require('json-stable-stringify')
 
 const updateNotifier = require('update-notifier')
 const pkg = require('./package.json')
@@ -206,7 +207,7 @@ function serve() {
     if (!data || !data.rasa_nlu_data) {
       res.json({error: 'file is invalid'})
     }
-    fs.writeFile(sourceFile.path, JSON.stringify(data, null, 2), (error) => {
+    fs.writeFile(sourceFile.path, stringify(data, {space: '  '}), (error) => {
       if (error) {
         return res.json({error})
       }
